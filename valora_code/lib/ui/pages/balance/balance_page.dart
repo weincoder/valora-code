@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/providers/balance_provider.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../../domain/models/balance/balance_report.dart';
-import '../../widgets/retro_background.dart';
+import '../../widgets/owl_mascot.dart';
 
 class BalancePage extends ConsumerWidget {
   const BalancePage({super.key});
@@ -14,58 +14,105 @@ class BalancePage extends ConsumerWidget {
     final report = ref.watch(balanceProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Balance')),
-      body: RetroBackground(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Resumen financiero',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primaryColor,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _SummaryGrid(report: report),
-              const SizedBox(height: 28),
-              const Text(
-                'Ingresos mensuales',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primaryColor,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _MonthlyBarChart(
-                key: const Key('monthly-revenue-chart'),
-                monthlyData: report.monthlyRevenue,
-                barColor: Colors.green,
-                emptyLabel: 'Sin ingresos mensuales',
-              ),
-              const SizedBox(height: 28),
-              const Text(
-                'Gastos mensuales',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primaryColor,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _MonthlyBarChart(
-                key: const Key('monthly-expenses-chart'),
-                monthlyData: report.monthlyExpenses,
-                barColor: Colors.red,
-                emptyLabel: 'Sin gastos mensuales',
-              ),
-            ],
-          ),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: const Text(
+          'Balance',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
         ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _OwlBalanceHeader(report: report),
+            const SizedBox(height: 16),
+            _SummaryGrid(report: report),
+            const SizedBox(height: 28),
+            const Text(
+              'Ingresos mensuales',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _MonthlyBarChart(
+              key: const Key('monthly-revenue-chart'),
+              monthlyData: report.monthlyRevenue,
+              barColor: AppTheme.successColor,
+              emptyLabel: 'Sin ingresos mensuales',
+            ),
+            const SizedBox(height: 28),
+            const Text(
+              'Gastos mensuales',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _MonthlyBarChart(
+              key: const Key('monthly-expenses-chart'),
+              monthlyData: report.monthlyExpenses,
+              barColor: AppTheme.dangerColor,
+              emptyLabel: 'Sin gastos mensuales',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OwlBalanceHeader extends StatelessWidget {
+  final BalanceReport report;
+  const _OwlBalanceHeader({required this.report});
+
+  @override
+  Widget build(BuildContext context) {
+    final isPositive = report.totalProfit >= 0;
+    final scenario = isPositive ? OwlScenario.success : OwlScenario.working;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppTheme.cardBorder.withValues(alpha: 0.50),
+          width: 0.8,
+        ),
+      ),
+      child: Row(
+        children: [
+          OwlMascot(scenario: scenario, size: 90),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  isPositive ? '¡Buen trabajo!' : 'Revisemos los números',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  isPositive
+                      ? 'Tu negocio está generando utilidades 🎉'
+                      : 'Hay oportunidades de mejora 📊',
+                  style: const TextStyle(color: Colors.white54, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -90,28 +137,28 @@ class _SummaryGrid extends StatelessWidget {
           label: 'Ingresos totales',
           value: '\$${report.totalRevenue.toStringAsFixed(2)}',
           icon: Icons.trending_up,
-          color: Colors.green.shade700,
+          color: AppTheme.successColor,
         ),
         _SummaryCard(
           key: const Key('balance-expenses'),
           label: 'Gastos totales',
           value: '\$${report.totalExpenses.toStringAsFixed(2)}',
           icon: Icons.trending_down,
-          color: Colors.red.shade700,
+          color: AppTheme.dangerColor,
         ),
         _SummaryCard(
           key: const Key('balance-profit'),
           label: 'Ganancia neta',
           value: '\$${report.totalProfit.toStringAsFixed(2)}',
           icon: Icons.account_balance_wallet,
-          color: AppTheme.accentColor,
+          color: const Color(0xFF9B8FF5),
         ),
         _SummaryCard(
           key: const Key('balance-margin'),
           label: 'Margen promedio',
           value: '${report.avgMargin.toStringAsFixed(1)}%',
           icon: Icons.pie_chart,
-          color: AppTheme.primaryColor,
+          color: AppTheme.textSecondary,
         ),
       ],
     );
@@ -157,7 +204,10 @@ class _SummaryCard extends StatelessWidget {
                 ),
                 Text(
                   label,
-                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppTheme.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -184,7 +234,7 @@ class _MonthlyBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     if (monthlyData.isEmpty) {
       return Center(
-        child: Text(emptyLabel, style: const TextStyle(color: Colors.grey)),
+        child: Text(emptyLabel, style: const TextStyle(color: Colors.white54)),
       );
     }
 

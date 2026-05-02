@@ -105,6 +105,112 @@ void main() {
     });
   });
 
+  group('ProductItemNotifier.save', () {
+    test('should call gateway.save and reload', () async {
+      // Arrange
+      when(() => mockItemGateway.save(any())).thenAnswer((_) async {});
+      when(
+        () => mockItemGateway.getAll(),
+      ).thenAnswer((_) async => [_sampleItem]);
+      when(() => mockMarginGateway.calculateProfitMargin(any())).thenReturn(25);
+      final container = ProviderContainer(
+        overrides: [
+          productItemProvider.overrideWith(
+            (_) => _makeNotifier(mockItemGateway, mockMarginGateway),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Act
+      await container
+          .read(productItemProvider.notifier)
+          .save(
+            title: 'App',
+            description: 'Descripción',
+            hourlyRate: 50,
+            estimatedHours: 8,
+            additionalCosts: const [
+              AdditionalCost(label: 'Hosting', amount: 30),
+            ],
+            salePrice: 600,
+          );
+
+      // Assert
+      verify(() => mockItemGateway.save(any())).called(1);
+      expect(container.read(productItemProvider).items, hasLength(1));
+    });
+
+    test('should use existingId when provided', () async {
+      // Arrange
+      when(() => mockItemGateway.save(any())).thenAnswer((_) async {});
+      when(() => mockItemGateway.getAll()).thenAnswer((_) async => []);
+      when(() => mockMarginGateway.calculateProfitMargin(any())).thenReturn(25);
+      final container = ProviderContainer(
+        overrides: [
+          productItemProvider.overrideWith(
+            (_) => _makeNotifier(mockItemGateway, mockMarginGateway),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Act
+      await container
+          .read(productItemProvider.notifier)
+          .save(
+            existingId: 'existing-id',
+            title: 'App',
+            description: 'Desc',
+            hourlyRate: 50,
+            estimatedHours: 8,
+            additionalCosts: const [],
+            salePrice: 400,
+          );
+
+      // Assert
+      final saved =
+          verify(() => mockItemGateway.save(captureAny())).captured.first
+              as ProductItem;
+      expect(saved.id, 'existing-id');
+    });
+
+    test('should set error when save throws', () async {
+      // Arrange
+      when(
+        () => mockItemGateway.save(any()),
+      ).thenThrow(Exception('save failed'));
+      when(() => mockItemGateway.getAll()).thenAnswer((_) async => []);
+      when(() => mockMarginGateway.calculateProfitMargin(any())).thenReturn(25);
+      final container = ProviderContainer(
+        overrides: [
+          productItemProvider.overrideWith(
+            (_) => _makeNotifier(mockItemGateway, mockMarginGateway),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Act
+      await container
+          .read(productItemProvider.notifier)
+          .save(
+            title: 'App',
+            description: 'Desc',
+            hourlyRate: 50,
+            estimatedHours: 8,
+            additionalCosts: const [],
+            salePrice: 400,
+          );
+
+      // Assert
+      expect(
+        container.read(productItemProvider).error,
+        'Error al guardar el producto',
+      );
+    });
+  });
+
   group('ProductItemNotifier.delete', () {
     test('should call gateway.delete and reload list', () async {
       // Arrange
@@ -126,6 +232,32 @@ void main() {
       // Assert
       verify(() => mockItemGateway.delete('test-1')).called(1);
       expect(container.read(productItemProvider).items, isEmpty);
+    });
+
+    test('should set error when delete throws', () async {
+      // Arrange
+      when(
+        () => mockItemGateway.delete(any()),
+      ).thenThrow(Exception('delete failed'));
+      when(() => mockItemGateway.getAll()).thenAnswer((_) async => []);
+      when(() => mockMarginGateway.calculateProfitMargin(any())).thenReturn(25);
+      final container = ProviderContainer(
+        overrides: [
+          productItemProvider.overrideWith(
+            (_) => _makeNotifier(mockItemGateway, mockMarginGateway),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Act
+      await container.read(productItemProvider.notifier).delete('test-1');
+
+      // Assert
+      expect(
+        container.read(productItemProvider).error,
+        'Error al eliminar el producto',
+      );
     });
   });
 }

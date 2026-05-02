@@ -48,9 +48,9 @@ class ProductCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         product.description,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
-                          color: Colors.grey.shade600,
+                          color: AppTheme.textSecondary,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -60,13 +60,13 @@ class ProductCard extends StatelessWidget {
                         children: [
                           _BadgeChip(
                             label: '\$${product.salePrice.toStringAsFixed(2)}',
-                            color: AppTheme.primaryColor,
+                            color: Colors.white,
                           ),
                           const SizedBox(width: 8),
                           _BadgeChip(
                             label:
                                 '${product.profitMargin.toStringAsFixed(1)}% margen',
-                            color: AppTheme.accentColor,
+                            color: const Color(0xFF9B8FF5),
                           ),
                         ],
                       ),

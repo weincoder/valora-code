@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../config/providers/sale_record_provider.dart';
-import '../../../config/routes/app_router.dart';
-import '../../../domain/models/sale_record/sale_record.dart';
-import '../../widgets/retro_background.dart';
 import 'package:go_router/go_router.dart';
+import '../../../config/providers/sale_record_provider.dart';
+import '../../../config/theme/app_theme.dart';
+import '../../../domain/models/sale_record/sale_record.dart';
+import '../../widgets/owl_mascot.dart';
 
 class SaleListPage extends ConsumerStatefulWidget {
   const SaleListPage({super.key});
@@ -25,49 +25,49 @@ class _SaleListPageState extends ConsumerState<SaleListPage> {
     final state = ref.watch(saleRecordProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Ventas')),
-      body: RetroBackground(
-        child: Builder(
-          builder: (_) {
-            if (state.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (state.error != null) {
-              return Center(
-                child: Text(
-                  state.error!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              );
-            }
-            if (state.records.isEmpty) {
-              return const Center(
-                key: Key('sales-empty-text'),
-                child: Text(
-                  'No hay ventas registradas',
-                  style: TextStyle(color: Colors.white70),
-                ),
-              );
-            }
-            return ListView.builder(
-              key: const Key('sales-list'),
-              padding: const EdgeInsets.all(16),
-              itemCount: state.records.length,
-              itemBuilder: (context, index) {
-                final record = state.records[index];
-                return _SaleRecordCard(
-                  record: record,
-                  onDelete: () => _confirmDelete(context, record),
-                );
-              },
-            );
-          },
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: const Text(
+          'Ventas',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        key: const Key('fab-new-sale'),
-        onPressed: () => context.push(AppRouter.saleNew),
-        child: const Icon(Icons.add),
+      body: Builder(
+        builder: (_) {
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state.error != null) {
+            return Center(
+              child: Text(
+                state.error!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
+          }
+          if (state.records.isEmpty) {
+            return Center(
+              key: const Key('sales-empty-text'),
+              child: OwlMascot(
+                scenario: OwlScenario.empty,
+                size: 160,
+                label: 'Sin ventas registradas.\nPresiona + para agregar una.',
+              ),
+            );
+          }
+          return ListView.builder(
+            key: const Key('sales-list'),
+            padding: const EdgeInsets.all(16),
+            itemCount: state.records.length,
+            itemBuilder: (context, index) {
+              final record = state.records[index];
+              return _SaleRecordCard(
+                record: record,
+                onDelete: () => _confirmDelete(context, record),
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -122,7 +122,7 @@ class _SaleRecordCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.green.shade700,
+                color: AppTheme.successColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

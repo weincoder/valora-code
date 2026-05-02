@@ -80,6 +80,92 @@ void main() {
     });
   });
 
+  group('SaleRecordNotifier.save', () {
+    test('should call gateway.save and reload', () async {
+      // Arrange
+      when(() => mockGateway.save(any())).thenAnswer((_) async {});
+      when(() => mockGateway.getAll()).thenAnswer((_) async => [_sampleRecord]);
+      final container = ProviderContainer(
+        overrides: [
+          saleRecordProvider.overrideWith((_) => _makeNotifier(mockGateway)),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Act
+      await container
+          .read(saleRecordProvider.notifier)
+          .save(
+            productItemId: 'prod-1',
+            productTitle: 'App web',
+            quantity: 1,
+            unitPrice: 1200.0,
+            date: DateTime(2025, 6, 1),
+          );
+
+      // Assert
+      verify(() => mockGateway.save(any())).called(1);
+      expect(container.read(saleRecordProvider).records, hasLength(1));
+    });
+
+    test('should use existingId when provided', () async {
+      // Arrange
+      when(() => mockGateway.save(any())).thenAnswer((_) async {});
+      when(() => mockGateway.getAll()).thenAnswer((_) async => []);
+      final container = ProviderContainer(
+        overrides: [
+          saleRecordProvider.overrideWith((_) => _makeNotifier(mockGateway)),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Act
+      await container
+          .read(saleRecordProvider.notifier)
+          .save(
+            existingId: 'existing-id',
+            productItemId: 'prod-1',
+            productTitle: 'App',
+            quantity: 1,
+            unitPrice: 100.0,
+          );
+
+      // Assert
+      final saved =
+          verify(() => mockGateway.save(captureAny())).captured.first
+              as SaleRecord;
+      expect(saved.id, 'existing-id');
+    });
+
+    test('should set error when save throws', () async {
+      // Arrange
+      when(() => mockGateway.save(any())).thenThrow(Exception('save failed'));
+      when(() => mockGateway.getAll()).thenAnswer((_) async => []);
+      final container = ProviderContainer(
+        overrides: [
+          saleRecordProvider.overrideWith((_) => _makeNotifier(mockGateway)),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Act
+      await container
+          .read(saleRecordProvider.notifier)
+          .save(
+            productItemId: 'prod-1',
+            productTitle: 'App',
+            quantity: 1,
+            unitPrice: 100.0,
+          );
+
+      // Assert
+      expect(
+        container.read(saleRecordProvider).error,
+        'Error al guardar la venta',
+      );
+    });
+  });
+
   group('SaleRecordNotifier.delete', () {
     test('should call gateway.delete and reload', () async {
       // Arrange
@@ -97,6 +183,29 @@ void main() {
 
       // Assert
       verify(() => mockGateway.delete('sale-test-1')).called(1);
+    });
+
+    test('should set error when delete throws', () async {
+      // Arrange
+      when(
+        () => mockGateway.delete(any()),
+      ).thenThrow(Exception('delete failed'));
+      when(() => mockGateway.getAll()).thenAnswer((_) async => []);
+      final container = ProviderContainer(
+        overrides: [
+          saleRecordProvider.overrideWith((_) => _makeNotifier(mockGateway)),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Act
+      await container.read(saleRecordProvider.notifier).delete('sale-test-1');
+
+      // Assert
+      expect(
+        container.read(saleRecordProvider).error,
+        'Error al eliminar la venta',
+      );
     });
   });
 }
