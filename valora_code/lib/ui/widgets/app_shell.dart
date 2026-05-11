@@ -14,6 +14,7 @@ class AppShell extends StatelessWidget {
     _TabItem(icon: Icons.swap_vert_rounded, label: 'Movimientos'),
     _TabItem(icon: Icons.bar_chart_rounded, label: 'Balance'),
     _TabItem(icon: Icons.apps_rounded, label: 'Más'),
+    _TabItem(icon: Icons.people_outline, label: 'Amigos'),
   ];
 
   @override
@@ -107,31 +108,47 @@ class _AppBottomBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _NavItem(
-            icon: tabs[0].icon,
-            label: tabs[0].label,
-            selected: currentIndex == 0,
-            onTap: () => onTap(0),
+          Expanded(
+            child: _NavItem(
+              icon: tabs[0].icon,
+              label: tabs[0].label,
+              selected: currentIndex == 0,
+              onTap: () => onTap(0),
+            ),
           ),
-          _NavItem(
-            icon: tabs[1].icon,
-            label: tabs[1].label,
-            selected: currentIndex == 1,
-            onTap: () => onTap(1),
+          Expanded(
+            child: _NavItem(
+              icon: tabs[1].icon,
+              label: tabs[1].label,
+              selected: currentIndex == 1,
+              onTap: () => onTap(1),
+            ),
           ),
           // Centro vacío para el FAB
           const SizedBox(width: 72),
-          _NavItem(
-            icon: tabs[2].icon,
-            label: tabs[2].label,
-            selected: currentIndex == 2,
-            onTap: () => onTap(2),
+          Expanded(
+            child: _NavItem(
+              icon: tabs[2].icon,
+              label: tabs[2].label,
+              selected: currentIndex == 2,
+              onTap: () => onTap(2),
+            ),
           ),
-          _NavItem(
-            icon: tabs[3].icon,
-            label: tabs[3].label,
-            selected: currentIndex == 3,
-            onTap: () => onTap(3),
+          Expanded(
+            child: _NavItem(
+              icon: tabs[3].icon,
+              label: tabs[3].label,
+              selected: currentIndex == 3,
+              onTap: () => onTap(3),
+            ),
+          ),
+          Expanded(
+            child: _NavItem(
+              icon: tabs[4].icon,
+              label: tabs[4].label,
+              selected: currentIndex == 4,
+              onTap: () => onTap(4),
+            ),
           ),
         ],
       ),
@@ -161,36 +178,33 @@ class _NavItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: SizedBox(
-        width: 80,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-              decoration: BoxDecoration(
-                color: selected
-                    ? activeColor.withValues(alpha: 0.16)
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Icon(icon, color: color, size: 22),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+            decoration: BoxDecoration(
+              color: selected
+                  ? activeColor.withValues(alpha: 0.16)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(24),
             ),
-            const SizedBox(height: 2),
-            AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 200),
-              style: TextStyle(
-                color: color,
-                fontSize: 11,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-                letterSpacing: 0.2,
-              ),
-              child: Text(label),
+            child: Icon(icon, color: color, size: 22),
+          ),
+          const SizedBox(height: 2),
+          AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: TextStyle(
+              color: color,
+              fontSize: 11,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+              letterSpacing: 0.2,
             ),
-          ],
-        ),
+            child: Text(label),
+          ),
+        ],
       ),
     );
   }

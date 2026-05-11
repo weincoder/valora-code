@@ -122,7 +122,7 @@ class [Entity]Api implements [Entity]Gateway {
 <!-- SPECKIT START -->
 ## 📋 Plan de Implementación Activo
 
-**Feature**: Gestión de Clientes y Cuentas de Cobro  
-**Plan**: [specs/001-gestion-clientes-cuentas-cobro/plan.md](../../../specs/001-gestion-clientes-cuentas-cobro/plan.md)  
-**Branch**: `001-gestion-clientes-cuentas-cobro`
+**Feature**: Gestión de Amigos y Especialidades  
+**Plan**: [specs/002-amigos-especialidades/plan.md](../../../specs/002-amigos-especialidades/plan.md)  
+**Branch**: `002-amigos-especialidades`
 <!-- SPECKIT END -->
