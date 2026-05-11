@@ -12,6 +12,12 @@ import '../../ui/pages/sale_record/sale_record_form_page.dart';
 import '../../ui/pages/expense/expense_form_page.dart';
 import '../../ui/pages/register/register_page.dart';
 import '../../ui/widgets/app_shell.dart';
+import '../../ui/pages/issuer_config/issuer_config_page.dart';
+import '../../ui/pages/client/client_list_page.dart';
+import '../../ui/pages/client/client_form_page.dart';
+import '../../ui/pages/invoice/invoice_list_page.dart';
+import '../../ui/pages/invoice/invoice_form_page.dart';
+import '../../ui/pages/invoice/invoice_detail_page.dart';
 
 class AppRouter {
   static const String splash = '/splash';
@@ -29,6 +35,15 @@ class AppRouter {
   static const String saleEdit = '/sale/:id';
   static const String expenseNew = '/expense/new';
   static const String expenseEdit = '/expense/:id';
+
+  // ── Módulo: Gestión de Clientes y Cuentas de Cobro ──────────────────────────
+  static const String clients = '/clients';
+  static const String clientNew = '/clients/new';
+  static const String clientEdit = '/clients/:clientId';
+  static const String issuerConfig = '/issuer-config';
+  static const String invoices = '/invoices';
+  static const String invoiceNew = '/invoices/new';
+  static const String invoiceDetail = '/invoices/:invoiceId/detail';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -57,6 +72,21 @@ class AppRouter {
         path: '/expense/:id',
         builder: (_, state) =>
             ExpenseFormPage(expenseId: state.pathParameters['id']),
+      ),
+      GoRoute(path: issuerConfig, builder: (_, _) => const IssuerConfigPage()),
+      GoRoute(path: clients, builder: (_, _) => const ClientListPage()),
+      GoRoute(path: clientNew, builder: (_, _) => const ClientFormPage()),
+      GoRoute(
+        path: clientEdit,
+        builder: (_, state) =>
+            ClientFormPage(clientId: state.pathParameters['clientId']),
+      ),
+      GoRoute(path: invoices, builder: (_, _) => const InvoiceListPage()),
+      GoRoute(path: invoiceNew, builder: (_, _) => const InvoiceFormPage()),
+      GoRoute(
+        path: invoiceDetail,
+        builder: (_, state) =>
+            InvoiceDetailPage(invoiceId: state.pathParameters['invoiceId']!),
       ),
 
       // ── Shell con bottom nav (4 tabs) ─────────────────────────────────────────
