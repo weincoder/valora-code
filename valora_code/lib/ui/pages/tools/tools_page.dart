@@ -89,6 +89,13 @@ class ToolsPage extends StatelessWidget {
                     color: const Color(0xFF8B5E9E),
                     onTap: () => context.push(AppRouter.issuerConfig),
                   ),
+                  _ToolCard(
+                    icon: Icons.group_outlined,
+                    label: 'Amigos',
+                    description: 'Tu directorio\nde talento',
+                    color: const Color(0xFF3A7EC8),
+                    onTap: () => context.push(AppRouter.friends),
+                  ),
                 ],
               ),
             ],

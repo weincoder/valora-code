@@ -18,6 +18,8 @@ import '../../ui/pages/client/client_form_page.dart';
 import '../../ui/pages/invoice/invoice_list_page.dart';
 import '../../ui/pages/invoice/invoice_form_page.dart';
 import '../../ui/pages/invoice/invoice_detail_page.dart';
+import '../../ui/pages/friend/friend_list_page.dart';
+import '../../ui/pages/friend/friend_form_page.dart';
 
 class AppRouter {
   static const String splash = '/splash';
@@ -44,6 +46,11 @@ class AppRouter {
   static const String invoices = '/invoices';
   static const String invoiceNew = '/invoices/new';
   static const String invoiceDetail = '/invoices/:invoiceId/detail';
+
+  // ── Módulo: Amigos y Especialidades ─────────────────────────────────────────
+  static const String friends = '/friends';
+  static const String friendNew = '/friends/new';
+  static const String friendEdit = '/friends/:friendId';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -88,8 +95,14 @@ class AppRouter {
         builder: (_, state) =>
             InvoiceDetailPage(invoiceId: state.pathParameters['invoiceId']!),
       ),
+      GoRoute(path: friendNew, builder: (_, _) => const FriendFormPage()),
+      GoRoute(
+        path: friendEdit,
+        builder: (_, state) =>
+            FriendFormPage(friendId: state.pathParameters['friendId']),
+      ),
 
-      // ── Shell con bottom nav (4 tabs) ─────────────────────────────────────────
+      // ── Shell con bottom nav (5 tabs) ─────────────────────────────────────────
       StatefulShellRoute.indexedStack(
         builder: (_, _, shell) => AppShell(navigationShell: shell),
         branches: [
@@ -112,6 +125,11 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(path: tools, builder: (_, _) => const ToolsPage()),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(path: friends, builder: (_, _) => const FriendListPage()),
             ],
           ),
         ],

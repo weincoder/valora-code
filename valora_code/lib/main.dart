@@ -29,6 +29,7 @@ Future<void> _initHive() async {
     Hive.openBox<Map>('clients'),
     Hive.openBox<Map>('issuer_config'),
     Hive.openBox<Map>('invoices'),
+    Hive.openBox<Map>('friends'),
   ]);
 }
 
