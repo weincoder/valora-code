@@ -25,6 +25,11 @@ Future<void> _initHive() async {
       Hive.init(Directory.current.path);
     }
   }
+  await Future.wait([
+    Hive.openBox<Map>('clients'),
+    Hive.openBox<Map>('issuer_config'),
+    Hive.openBox<Map>('invoices'),
+  ]);
 }
 
 class MyApp extends StatelessWidget {

@@ -1,6 +1,6 @@
 ---
 description: Instrucciones para generar código Flutter siguiendo Clean Architecture y SOLID.
-applyTo: **/*.dart
+applyTo: '**/*.dart'
 ---
 
 # 🤖 LLM INSTRUCTIONS: FLUTTER CLEAN ARCHITECTURE
@@ -118,3 +118,11 @@ class [Entity]Api implements [Entity]Gateway {
   }
 }
 ```
+
+<!-- SPECKIT START -->
+## 📋 Plan de Implementación Activo
+
+**Feature**: Gestión de Clientes y Cuentas de Cobro  
+**Plan**: [specs/001-gestion-clientes-cuentas-cobro/plan.md](../../../specs/001-gestion-clientes-cuentas-cobro/plan.md)  
+**Branch**: `001-gestion-clientes-cuentas-cobro`
+<!-- SPECKIT END -->

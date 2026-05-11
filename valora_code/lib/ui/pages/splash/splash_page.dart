@@ -97,9 +97,9 @@ class _SplashPageState extends State<SplashPage>
               ),
 
               // ── Floating orbs ───────────────────────────────────────────
-              Opacity(
-                opacity: _fadeIn.value.clamp(0.0, 1.0),
-                child: Positioned.fill(
+              Positioned.fill(
+                child: Opacity(
+                  opacity: _fadeIn.value.clamp(0.0, 1.0),
                   child: CustomPaint(painter: OrbPainter(animValue: orbAnim)),
                 ),
               ),
